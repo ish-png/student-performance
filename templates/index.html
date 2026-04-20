@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Performance System</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#0a0a0a;color:#fff;min-height:100vh}
+    .header{background:#0d0d0d;border-bottom:2px solid #00ff41;padding:20px 40px;display:flex;align-items:center;gap:16px}
+    .header-icon{width:48px;height:48px;background:#00ff41;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px}
+    .header h1{font-size:24px;font-weight:700;color:#00ff41}
+    .header p{font-size:13px;color:#666;margin-top:2px}
+    .main{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 90px)}
+    .left{background:#0d0d0d;border-right:1px solid #1a1a1a;padding:32px 40px;overflow-y:auto}
+    .right{background:#0a0a0a;padding:32px 40px}
+    .sec-title{font-size:11px;font-weight:700;color:#00ff41;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;padding-bottom:8px;border-bottom:1px solid #1a1a1a}
+    .field{margin-bottom:24px}
+    .field-label{font-size:13px;font-weight:600;color:#aaa;margin-bottom:10px;display:block}
+    .toggle-group{display:flex;gap:8px;flex-wrap:wrap}
+    .toggle-btn{padding:9px 18px;border-radius:8px;border:1.5px solid #222;background:#111;font-size:13px;font-weight:500;color:#888;cursor:pointer;transition:all .2s}
+    .toggle-btn:hover{border-color:#00ff41;color:#00ff41}
+    .toggle-btn.sel{background:#001a00;border-color:#00ff41;color:#00ff41;box-shadow:0 0 10px rgba(0,255,65,.15)}
+    .slider-row{display:flex;align-items:center;gap:16px}
+    .slider-num{font-size:26px;font-weight:700;color:#00ff41;min-width:70px}
+    input[type=range]{flex:1;-webkit-appearance:none;height:6px;border-radius:3px;background:#1a1a1a;outline:none;cursor:pointer}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#00ff41;cursor:pointer;border:3px solid #0a0a0a;box-shadow:0 0 8px rgba(0,255,65,.5);transition:all .2s}
+    input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.2)}
+    .track{display:flex;justify-content:space-between;font-size:10px;color:#333;margin-top:4px}
+    .divider{height:1px;background:#1a1a1a;margin:24px 0}
+    .predict-btn{width:100%;padding:16px;background:#00ff41;color:#000;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px}
+    .predict-btn:hover{background:#00cc33;transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,255,65,.3)}
+    .predict-btn:active{transform:scale(.98)}
+    .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+    .stat{background:#111;border:1px solid #1a1a1a;border-radius:12px;padding:16px;text-align:center;transition:all .3s}
+    .stat:hover{border-color:#00ff41}
+    .stat-num{font-size:28px;font-weight:700;color:#00ff41}
+    .stat-lbl{font-size:11px;color:#555;margin-top:4px;letter-spacing:.5px}
+    .result-title-sec{font-size:11px;font-weight:700;color:#00ff41;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;padding-bottom:8px;border-bottom:1px solid #1a1a1a}
+    .result-card{border-radius:14px;padding:28px;text-align:center;margin-bottom:20px;border:2px solid #1a1a1a;background:#111;transition:all .5s}
+    .result-card.pass{border-color:#00ff41;background:#001a00}
+    .result-card.fail{border-color:#ff4444;background:#1a0000}
+    .result-emoji{font-size:52px;margin-bottom:12px}
+    .result-big{font-size:32px;font-weight:700;margin-bottom:6px}
+    .result-card.pass .result-big{color:#00ff41}
+    .result-card.fail .result-big{color:#ff4444}
+    .result-msg{font-size:14px;color:#888;margin-bottom:20px;line-height:1.6}
+    .prob-top{display:flex;justify-content:space-between;font-size:12px;color:#555;margin-bottom:6px}
+    .prob-bar{height:12px;background:#1a1a1a;border-radius:6px;overflow:hidden}
+    .prob-fill{height:100%;border-radius:6px;width:0%;transition:width 1.5s cubic-bezier(.4,0,.2,1)}
+    .tip-box{background:#0d1a0d;border:1px solid #1a3a1a;border-radius:10px;padding:16px;font-size:13px;color:#4dff70;line-height:1.7;margin-bottom:20px;display:none}
+    .tip-label{font-size:10px;font-weight:700;color:#00ff41;letter-spacing:1px;margin-bottom:6px}
+    .subjects{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+    .subj-item{background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:14px}
+    .subj-name{font-size:11px;color:#555;margin-bottom:8px;font-weight:600;letter-spacing:.5px}
+    .subj-score{font-size:20px;font-weight:700;color:#00ff41}
+    input[type=range].subj-range{width:100%;margin-top:6px;flex:none}
+    .empty-state{text-align:center;padding:40px 20px}
+    .empty-icon{font-size:48px;margin-bottom:16px}
+    .empty-text{font-size:16px;font-weight:600;color:#444;margin-bottom:8px}
+    .empty-sub{font-size:13px;color:#333}
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="header-icon">🎓</div>
+  <div>
+    <h1>Student Performance System</h1>
+    <p>School Academic Result Predictor — AI Powered</p>
+  </div>
+</div>
+
+<div class="main">
+  <div class="left">
+    <div class="sec-title">Student Details</div>
+
+    <div class="field">
+      <span class="field-label">Class / Standard</span>
+      <div class="toggle-group" id="class-grp">
+        <button class="toggle-btn" onclick="pick('class-grp',this)">8th</button>
+        <button class="toggle-btn" onclick="pick('class-grp',this)">9th</button>
+        <button class="toggle-btn sel" onclick="pick('class-grp',this)">10th</button>
+        <button class="toggle-btn" onclick="pick('class-grp',this)">11th</button>
+        <button class="toggle-btn" onclick="pick('class-grp',this)">12th</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Gender</span>
+      <div class="toggle-group" id="gender-grp">
+        <button class="toggle-btn sel" onclick="pick('gender-grp',this)">Male</button>
+        <button class="toggle-btn" onclick="pick('gender-grp',this)">Female</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Stream</span>
+      <div class="toggle-group" id="stream-grp">
+        <button class="toggle-btn sel" onclick="pick('stream-grp',this)">Science</button>
+        <button class="toggle-btn" onclick="pick('stream-grp',this)">Commerce</button>
+        <button class="toggle-btn" onclick="pick('stream-grp',this)">Arts</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="sec-title">Attendance and Study</div>
+
+    <div class="field">
+      <span class="field-label">Attendance Percentage</span>
+      <div class="slider-row">
+        <div class="slider-num" id="att-val">75%</div>
+        <div style="flex:1">
+          <input type="range" min="0" max="100" value="75" step="1"
+            oninput="updSlider('att-val',this.value+'%');calcAll()">
+          <div class="track"><span>0%</span><span>50%</span><span>100%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Daily Study Hours</span>
+      <div class="slider-row">
+        <div class="slider-num" id="study-val">4h</div>
+        <div style="flex:1">
+          <input type="range" min="0" max="12" value="4" step="1"
+            oninput="updSlider('study-val',this.value+'h');calcAll()">
+          <div class="track"><span>0</span><span>6</span><span>12</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Exam Preparation</span>
+      <div class="toggle-group" id="prep-grp">
+        <button class="toggle-btn" onclick="pick('prep-grp',this);calcAll()">Not Started</button>
+        <button class="toggle-btn sel" onclick="pick('prep-grp',this);calcAll()">Ongoing</button>
+        <button class="toggle-btn" onclick="pick('prep-grp',this);calcAll()">Completed</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="sec-title">Subject Marks (Out of 100)</div>
+
+    <div class="subjects">
+      <div class="subj-item">
+        <div class="subj-name">MATHS</div>
+        <div class="subj-score" id="math-val">65</div>
+        <input type="range" class="subj-range" min="0" max="100" value="65" step="1"
+          oninput="updSlider('math-val',this.value);calcAll()">
+      </div>
+      <div class="subj-item">
+        <div class="subj-name">SCIENCE</div>
+        <div class="subj-score" id="sci-val">70</div>
+        <input type="range" class="subj-range" min="0" max="100" value="70" step="1"
+          oninput="updSlider('sci-val',this.value);calcAll()">
+      </div>
+      <div class="subj-item">
+        <div class="subj-name">ENGLISH</div>
+        <div class="subj-score" id="eng-val">60</div>
+        <input type="range" class="subj-range" min="0" max="100" value="60" step="1"
+          oninput="updSlider('eng-val',this.value);calcAll()">
+      </div>
+      <div class="subj-item">
+        <div class="subj-name">SOCIAL SCIENCE</div>
+        <div class="subj-score" id="soc-val">68</div>
+        <input type="range" class="subj-range" min="0" max="100" value="68" step="1"
+          oninput="updSlider('soc-val',this.value);calcAll()">
+      </div>
+    </div>
+
+    <button class="predict-btn" onclick="predict()">▶ Predict Result</button>
+  </div>
+
+  <div class="right">
+    <div class="result-title-sec">Live Analysis</div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-num" id="avg-score">66</div>
+        <div class="stat-lbl">Average Score</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="pred-grade">B</div>
+        <div class="stat-lbl">Expected Grade</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="pass-prob">72%</div>
+        <div class="stat-lbl">Pass Chance</div>
+      </div>
+    </div>
+
+    <div class="result-card" id="result-card">
+      <div class="empty-state">
+        <div class="empty-icon">📊</div>
+        <div class="empty-text">Waiting for prediction</div>
+        <div class="empty-sub">Fill in the details and click Predict Result</div>
+      </div>
+    </div>
+
+    <div class="tip-box" id="tip-box">
+      <div class="tip-label">AI SUGGESTION</div>
+      <div id="tip-text"></div>
+    </div>
+
+    <div class="result-title-sec">Subject Breakdown</div>
+    <div style="display:flex;flex-direction:column;gap:10px" id="subject-bars"></div>
+  </div>
+</div>
+
+<script>
+  function updSlider(id,val){document.getElementById(id).textContent=val}
+  function pick(g,btn){
+    document.querySelectorAll('#'+g+' .toggle-btn').forEach(b=>b.classList.remove('sel'));
+    btn.classList.add('sel');
+  }
+  function getNum(id){return parseInt(document.getElementById(id).textContent)||0}
+
+  function makeBar(subject,score,color){
+    return `<div style="background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:14px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:12px;color:#555;font-weight:600;letter-spacing:.5px">${subject}</span>
+        <span style="font-size:14px;font-weight:700;color:${color}">${score}/100</span>
+      </div>
+      <div style="height:8px;background:#1a1a1a;border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${score}%;background:${color};border-radius:4px;transition:width 1s ease"></div>
+      </div>
+    </div>`
+  }
+
+  function calcAll(){
+    const math=getNum('math-val'),sci=getNum('sci-val'),eng=getNum('eng-val'),soc=getNum('soc-val');
+    const att=getNum('att-val'),study=getNum('study-val');
+    const avg=Math.round((math+sci+eng+soc)/4);
+    const prepEl=document.querySelector('#prep-grp .sel');
+    const prepBonus=prepEl?(['Not Started','Ongoing','Completed'].indexOf(prepEl.textContent)*4):4;
+    const attBonus=att>=75?5:att>=60?2:0;
+    const studyBonus=Math.min(10,Math.round(study*1.5));
+    const finalScore=Math.min(100,Math.round(avg*.7+attBonus+studyBonus+prepBonus));
+    const passProb=Math.min(99,Math.max(5,Math.round(finalScore*.95)));
+    const grade=finalScore>=75?'A':finalScore>=65?'B':finalScore>=55?'C':finalScore>=35?'D':'F';
+    document.getElementById('avg-score').textContent=finalScore;
+    document.getElementById('pred-grade').textContent=grade;
+    document.getElementById('pass-prob').textContent=passProb+'%';
+    const barColor=s=>s>=60?'#00ff41':s>=40?'#ffaa00':'#ff4444';
+    document.getElementById('subject-bars').innerHTML=
+      makeBar('MATHEMATICS',math,barColor(math))+
+      makeBar('SCIENCE',sci,barColor(sci))+
+      makeBar('ENGLISH',eng,barColor(eng))+
+      makeBar('SOCIAL SCIENCE',soc,barColor(soc));
+    return {finalScore,passProb,grade,math,sci,eng,soc,att,study};
+  }
+
+  function predict(){
+    const d=calcAll();
+    const pass=d.finalScore>=35;
+    const card=document.getElementById('result-card');
+    const tip=document.getElementById('tip-box');
+    card.className='result-card '+(pass?'pass':'fail');
+    card.innerHTML=`
+      <div class="result-emoji">${pass?'🎉':'📚'}</div>
+      <div class="result-big">${pass?'PASS':'FAIL'}</div>
+      <div class="result-msg">${pass
+        ?'Great job! You are likely to pass this exam based on your current performance.'
+        :'You need to improve your scores. Focus on weak subjects and increase study hours.'}</div>
+      <div class="prob-top"><span>Pass probability</span><span>${d.passProb}%</span></div>
+      <div class="prob-bar"><div class="prob-fill" id="pfill" style="background:${pass?'#00ff41':'#ff4444'}"></div></div>`;
+    setTimeout(()=>{const pf=document.getElementById('pfill');if(pf)pf.style.width=d.passProb+'%'},100);
+    const weak=[];
+    if(d.math<60)weak.push('Mathematics');
+    if(d.sci<60)weak.push('Science');
+    if(d.eng<60)weak.push('English');
+    if(d.soc<60)weak.push('Social Science');
+    let tipText=`Your average score is ${d.finalScore}. `;
+    if(weak.length>0)tipText+=`Focus more on: ${weak.join(', ')}. `;
+    if(d.att<75)tipText+='Increase attendance above 75%. ';
+    if(d.study<3)tipText+='Try to study at least 3 to 4 hours daily. ';
+    if(weak.length===0&&d.att>=75)tipText+='Keep up the great work and revise all chapters before the exam!';
+    document.getElementById('tip-text').textContent=tipText;
+    tip.style.display='block';
+  }
+
+  calcAll();
+</script>
+</body>
+</html>
